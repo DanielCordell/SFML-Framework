@@ -1,7 +1,9 @@
 ﻿#include "MainState.h"
 #include "OtherState.h"
 
-MainState::MainState(bf::Engine* engine): State(engine), shape(20) {
+MainState::MainState(bf::Engine* engine): State(engine), shape(20), clockDisplayTime(0) {
+	shape.setOrigin(20, 20);
+	movingText.setPosition(engine->GetWindowSize().x / 2.f, engine->GetWindowSize().y / 2.f);
 	shape.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));	
 	shape.setPosition(engine->GetWindowSize().x/2.f, engine->GetWindowSize().y/2.f);
 }
@@ -27,15 +29,27 @@ void MainState::Update(float dt) {
 		xChange = xChange / sqrt(2.f);
 		yChange = yChange / sqrt(2.f);
 	}
-	shape.move(xChange, yChange);
 
+	if (engine->WasMousePressed(sf::Mouse::Left)) {
+		float sf = (rand() % 51 - 25) / 25.f + 1;
+		shape.setScale(sf, sf);
+	}
+
+	if (engine->WasMouseReleased(sf::Mouse::Left)) {
+		shape.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
+	}
+
+	shape.move(xChange, yChange);
+	clockDisplayTime += dt;
 }
 
 void MainState::Draw(sf::RenderWindow* window) {
 	window->draw(shape);
 	sf::Font font;
 	font.loadFromFile("C:/Windows/Fonts/agencyr.ttf");
-	sf::Text text{ "State 1",font };
-	text.setPosition(450, 550);
-	window->draw(text);
+	movingText.setFont(font);
+	movingText.move(rand() % 5 - 2, rand() % 5 - 2);
+	int timeSecs = floor(clockDisplayTime);
+	movingText.setString(std::to_string(timeSecs));
+	window->draw(movingText);
 }

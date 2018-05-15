@@ -48,27 +48,46 @@ namespace bf {
 
 	void Engine::HandleEvents() {
 		sf::Event event;
-		prevInputState = currentInputState;
+		prevKeyboardState = currentKeyboardState;
+		prevMouseState = currentMouseState;
 		while (window->pollEvent(event)) {
 			if (event.type == sf::Event::KeyPressed) {
-				currentInputState[event.key.code] = true;
+				currentKeyboardState[event.key.code] = true;
 			}
 			if (event.type == sf::Event::KeyReleased) {
-				currentInputState[event.key.code] = false;
+				currentKeyboardState[event.key.code] = false;
+			}
+			if (event.type == sf::Event::MouseButtonPressed) {
+				currentMouseState[event.mouseButton.button] = true;
+			}
+			if (event.type == sf::Event::MouseButtonReleased) {
+				currentMouseState[event.mouseButton.button] = false;
 			}
 		}
 	}
 
 	bool Engine::WasKeyPressed(sf::Keyboard::Key k) {
-		return currentInputState[k] && !prevInputState[k];
+		return currentKeyboardState[k] && !prevKeyboardState[k];
 	}
 
 	bool Engine::IsKeyDown(sf::Keyboard::Key k) {
-		return currentInputState[k];
+		return currentKeyboardState[k];
 	}
 
 	bool Engine::WasKeyReleased(sf::Keyboard::Key k) {
-		return !currentInputState[k] && prevInputState[k];
+		return !currentKeyboardState[k] && prevKeyboardState[k];
+	}
+
+	bool Engine::WasMousePressed(sf::Mouse::Button m) {
+		return currentMouseState[m] && !prevMouseState[m];
+	}
+
+	bool Engine::IsMouseDown(sf::Mouse::Button m) {
+		return currentMouseState[m];
+	}
+
+	bool Engine::WasMouseReleased(sf::Mouse::Button m) {
+		return !currentMouseState[m] && prevMouseState[m];
 	}
 
 	void Engine::SetTopStateToBeCulled(){

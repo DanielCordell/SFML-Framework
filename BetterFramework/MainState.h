@@ -3,6 +3,8 @@
 
 class MainState : public bf::State {
 	sf::CircleShape shape;
+	sf::Text movingText;
+	float clockDisplayTime;
 private:
 
 public:

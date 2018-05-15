@@ -18,8 +18,11 @@ namespace bf {
 		bool shouldCullState;
 
 		// Keyboard / Joystick / Mouse data objects.
-		std::bitset<sf::Keyboard::KeyCount> currentInputState;
-		std::bitset<sf::Keyboard::KeyCount> prevInputState;
+		std::bitset<sf::Keyboard::KeyCount> currentKeyboardState;
+		std::bitset<sf::Keyboard::KeyCount> prevKeyboardState;
+
+		std::bitset<sf::Mouse::ButtonCount> currentMouseState;
+		std::bitset<sf::Mouse::ButtonCount> prevMouseState;
 
 		void CullTopState();
 
@@ -54,6 +57,12 @@ namespace bf {
 		// Returns true if the key was released this update loop
 		// For detecting end of keypresses for e.g. charged attacks.
 		bool WasKeyReleased(sf::Keyboard::Key k);
+
+		bool WasMousePressed(sf::Mouse::Button m);
+
+		bool IsMouseDown(sf::Mouse::Button m);
+
+		bool WasMouseReleased(sf::Mouse::Button m);
 
 		// Adds a state of type StateType to the stack.
 		// If not a valid state type, does nothing.
