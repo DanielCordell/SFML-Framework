@@ -262,3 +262,14 @@ __pycache__/
 /imgui
 /SFML-2.5.0
 /BetterFramework/imgui
+/BetterFramework/sfml-window-d-2.dll
+/BetterFramework/sfml-window-2.dll
+/BetterFramework/sfml-system-d-2.dll
+/BetterFramework/sfml-system-2.dll
+/BetterFramework/sfml-network-d-2.dll
+/BetterFramework/sfml-network-2.dll
+/BetterFramework/sfml-graphics-d-2.dll
+/BetterFramework/sfml-graphics-2.dll
+/BetterFramework/sfml-audio-d-2.dll
+/BetterFramework/sfml-audio-2.dll
+/BetterFramework/openal32.dll
