@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
 
+#include "imgui.h"
+#include "imgui-SFML.h"
+#include "imgui_internal.h"
+
 #include "Engine.h"
 #include "MainState.h"
 
@@ -10,6 +14,7 @@ namespace bf {
 		window = new sf::RenderWindow(sf::VideoMode(width, height), name);
 		stateStack.push(new MainState(this));
 		shouldCullState = false;
+		ImGui::SFML::Init(*window);
 	}
 
 	Engine::~Engine() {
@@ -24,18 +29,27 @@ namespace bf {
 		sf::Clock clock;
 		float acc = 0;
 		float frameTime = 1 / 60.f;
+		bool firstTime = true;
 		while (!stateStack.empty()) {
 			auto& state = stateStack.top();
 
-			acc += clock.restart().asSeconds();
-			while (acc >= frameTime) {
+			auto time = clock.restart();
+			acc += time.asSeconds();
+			while (acc >= frameTime || firstTime) {
 				HandleEvents();
 				state->HandleEvents();
 				state->Update(frameTime);
 				acc -= frameTime;
+				ImGui::SFML::Update(*window, time);
+
+				SetupGui();
+
+				if (firstTime) firstTime = false;
 			}
 
+
 			window->clear();
+			ImGui::SFML::Render(*window);
 			state->Draw(window);
 			window->display();
 
@@ -51,6 +65,7 @@ namespace bf {
 		prevKeyboardState = currentKeyboardState;
 		prevMouseState = currentMouseState;
 		while (window->pollEvent(event)) {
+			ImGui::SFML::ProcessEvent(event);
 			if (event.type == sf::Event::KeyPressed) {
 				currentKeyboardState[event.key.code] = true;
 			}
@@ -97,6 +112,16 @@ namespace bf {
 	void Engine::Log(std::string str) { Log(LOG_INFO, str); }
 	void Engine::Log(LogLevel level, std::string str) {
 		std::cout << _loglevelMessages[level] << str << std::endl;
+	}
+
+	void Engine::SetupGui() {
+		ImGui::SetNextWindowPos({ 1000,16 });
+		ImGui::Begin("Hello, world!", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+		ImGui::Button("Look at this pretty button");
+		ImGui::End();
+
+		ImGui::EndFrame();
+
 	}
 
 	void Engine::CullTopState() {

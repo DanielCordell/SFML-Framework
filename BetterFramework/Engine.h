@@ -15,6 +15,8 @@ namespace bf {
 		std::stack<State*> stateStack;
 		sf::RenderWindow* window;
 
+		sf::Clock clock;
+
 		bool shouldCullState;
 
 		// Keyboard / Joystick / Mouse data objects.
@@ -84,8 +86,13 @@ namespace bf {
 		void Log(LogLevel level, std::string str);
 
 	private:
-		// Logging
-		std::map<LogLevel, std::string> _loglevelMessages = {
+
+		//Must be called every update
+		void SetupGui();
+
+
+	// Logging
+	std::map<LogLevel, std::string> _loglevelMessages = {
 			{ LOG_ERROR, "[Error]    " },
 			{ LOG_FATAL, "[FATAL]    " },
 			{ LOG_WARNING, "[Warning]  " },
@@ -102,4 +109,6 @@ namespace bf {
 		}
 		stateStack.push(new StateType(this));
 	}
+
+	
 }

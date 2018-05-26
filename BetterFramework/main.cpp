@@ -1,4 +1,7 @@
 #include "Engine.h"
+#include <imgui-SFML.h>
+#include <imgui.h>
+
 
 int main()
 {
