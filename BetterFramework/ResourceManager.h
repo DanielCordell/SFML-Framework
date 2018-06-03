@@ -28,6 +28,42 @@ public:
 	R& GetResource(std::string resourceName);
 };
 
+
+template <>
+inline sf::Texture& ResourceManager::GetResource<sf::Texture>(std::string resourceName) {
+	if (textureMap.find(resourceName) == textureMap.end()) {
+		textureMap[resourceName].loadFromFile("textures/" + resourceName);
+	}
+	return textureMap[resourceName];
+}
+
+template <>
+inline sf::Music& ResourceManager::GetResource<sf::Music>(std::string resourceName) {
+	if (musicMap.find(resourceName) == musicMap.end()) {
+		musicMap[resourceName].openFromFile("music/" + resourceName);
+	}
+	return musicMap[resourceName];
+}
+
+template <>
+inline sf::SoundBuffer& ResourceManager::GetResource<sf::SoundBuffer>(std::string resourceName) {
+	if (soundMap.find(resourceName) == soundMap.end()) {
+		soundMap[resourceName].loadFromFile("sound/" + resourceName);
+	}
+	return soundMap[resourceName];
+}
+
+
+template <>
+inline sf::Font& ResourceManager::GetResource<sf::Font>(std::string resourceName) {
+	if (fontMap.find(resourceName) == fontMap.end()) {
+		fontMap[resourceName].loadFromFile("fonts/" + resourceName);
+	}
+	return fontMap[resourceName];
+}
+
+
+
 template <class R>
 R& ResourceManager::GetResource(std::string resourceName) {
 	throw std::invalid_argument("Invalid class passed into GetResources when loading " + resourceName);

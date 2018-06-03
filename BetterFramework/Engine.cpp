@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <filesystem>
 
 #include "imgui.h"
 #include "imgui-SFML.h"
@@ -7,6 +8,9 @@
 
 #include "Engine.h"
 #include "MainState.h"
+#include "ResourceManager.h"
+
+namespace fs = std::experimental::filesystem;
 
 namespace bf {
 
@@ -114,14 +118,69 @@ namespace bf {
 		std::cout << _loglevelMessages[level] << str << std::endl;
 	}
 
+	void Engine::ImportResource(const std::string& item, const std::string& str) {
+		auto extension = fs::path(str).extension().string();
+		if (item == "Texture") {
+			if (Contains(_imageExtensions, extension)) {
+				fs::copy_file(str, std::string("Textures/") + fs::path(str).filename().string());
+				ResourceManager::Get()->GetResource<sf::Texture>(str);
+			}
+		}
+		else if (item == "Sound") {
+			if (Contains(_audioExtensions, extension)) {
+				fs::copy_file(str, std::string("Sounds/") + fs::path(str).filename().string());
+				ResourceManager::Get()->GetResource<sf::SoundBuffer>(str);
+			}
+		}
+		else if (item == "Music") {
+			if (Contains(_audioExtensions, extension)) {
+				fs::copy_file(str, std::string("Music/") + fs::path(str).filename().string());
+				ResourceManager::Get()->GetResource<sf::Music>(str);
+			}
+		}
+		else if (item == "Shader") {
+			if (Contains(_shaderExtensions, extension)) {
+				fs::copy_file(str, std::string("Shaders/") + fs::path(str).filename().string());
+				ResourceManager::Get()->GetResource<sf::Shader>(str);
+			}
+		}
+		else if (item == "Font") {
+			if (Contains(_fontExtensions, extension)) {
+				fs::copy_file(str, std::string("Fonts/") + fs::path(str).filename().string());
+				ResourceManager::Get()->GetResource<sf::Font>(str);
+			}
+		}
+		else {
+			std::string msg = "Invalid Resource argument to ImportResource, " + item;
+			Log(LOG_ERROR, msg);
+			throw std::invalid_argument(msg);
+		}
+	}
+
 	void Engine::SetupGui() {
 		ImGui::SetNextWindowPos({ 1000,16 });
-		ImGui::Begin("Hello, world!", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-		ImGui::Button("Look at this pretty button");
+		ImGui::Begin("Hello, world!", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
+
+		static const char* Items[] = {"Texture", "Sound", "Music",  "Shader", "Font"};
+		static int choice = 0;
+		ImGui::Text("Choose a type of resource to add...");
+		ImGui::ListBox("", &choice ,Items, IM_ARRAYSIZE(Items));
+		ImGui::Text("Enter the resource Path");
+		static char c[100];
+		ImGui::InputText("",c,IM_ARRAYSIZE(c),0);
+		if (ImGui::Button("Add Resource")) {
+			if (fs::exists(c)) {
+				ImportResource(Items[choice], c);
+			}
+		}
 		ImGui::End();
 
 		ImGui::EndFrame();
 
+	}
+
+	bool Contains(std::vector<std::string>& extensions, std::string extension) {
+		return find(extensions.begin(), extensions.end(), extension) != extensions.end();
 	}
 
 	void Engine::CullTopState() {

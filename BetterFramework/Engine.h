@@ -87,19 +87,37 @@ namespace bf {
 
 	private:
 
+		void ImportResource(const std::string& item , const std::string& str);
 		//Must be called every update
 		void SetupGui();
 
 
 	// Logging
-	std::map<LogLevel, std::string> _loglevelMessages = {
+		std::map<LogLevel, std::string> _loglevelMessages = {
 			{ LOG_ERROR, "[Error]    " },
 			{ LOG_FATAL, "[FATAL]    " },
 			{ LOG_WARNING, "[Warning]  " },
 			{ LOG_INFO, "[Info]     " }
 		};
+
+		std::vector<std::string> _imageExtensions = {
+			".bmp", ".png", ".tga", ".jpg", ".jpeg" ,".gif"
+		};
+
+		std::vector<std::string> _audioExtensions = {
+			".ogg", ".wav", ".flac"
+		};
+
+		std::vector<std::string> _shaderExtensions = {
+			".vert", ".frag", ".geom", ".hlsl"
+		};
+
+		std::vector<std::string> _fontExtensions = {
+			".ttf", ".otf", ".ttc"
+		};
 	};
 
+	bool Contains(std::vector<std::string>& extensions, std::string extension);
 
 	template <class StateType>
 	void Engine::AddToStack() {
@@ -109,6 +127,4 @@ namespace bf {
 		}
 		stateStack.push(new StateType(this));
 	}
-
-	
 }
